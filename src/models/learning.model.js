@@ -1,22 +1,48 @@
 import mongoose, { Schema } from "mongoose";
 
 const learningSchema = new Schema({
-    sign_video: {
+    video_url: {
         type: String,
-        required: true
+        required: true,
     },
-    sign_image: {
+    video_type: {
         type: String,
-        required: true
+        enum: ["long", "short"],
+        default: "long",
     },
-    sign_name: {
+    title: {
         type: String,
-        required: true
+        required: true,
+    },
+    thumbnail: {
+        type: String,
+        required: true,
     },
     category: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    uploaded_by: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    likes: {
+        type: Number,
+        default: 0,
+    },
+    dislikes: {
+        type: Number,
+        default: 0,
+    },
+    length: {
+        type: String,
+        required: true,
+    },
 }, { timestamps: true });
 
 export const Learning = mongoose.model("Learning", learningSchema)

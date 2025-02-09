@@ -3,24 +3,28 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { deleteImageByPublicId, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-const createLearning = asyncHandler(async (req, res) => {
-    const { sign_name, category } = req.body;
-    const { sign_video, sign_image } = req.files;
-    if (!sign_video && !sign_image) {
-        throw new ApiError(400, "sign_video and sign_image is required")
+const createLearningVideo = asyncHandler(async (req, res) => {
+    const { title, category, description, video_type } = req.body;
+    const { learning_video, thumbnail } = req.files;
+    if (!title || !category || !description) {
+        throw new ApiError(400, "title, category and description are required");
     }
-
-    // upload files into the cloudinary
-    const sign_video_url = await uploadOnCloudinary(sign_video[0].path);
-    const sign_image_url = await uploadOnCloudinary(sign_image[0].path);
-
+    if (!learning_video || !thumbnail) {
+        throw new ApiError(400, "learning_video and thumbnail are required");
+    }
+    const { secure_url: learning_video_url, duration } = await uploadOnCloudinary(learning_video[0].path);
+    const { secure_url: thumbnail_url } = await uploadOnCloudinary(thumbnail[0].path);
     const learning = await Learning.create({
-        sign_video: sign_video_url.url,
-        sign_image: sign_image_url.url,
-        sign_name,
-        category
-    })
-    return res.status(201).json(new ApiResponse(201, learning, "learning created successfully"))
+        title,
+        category,
+        description,
+        video_type,
+        video_url: learning_video_url,
+        thumbnail: thumbnail_url,
+        length: duration,
+        uploaded_by: req.user._id,
+    });
+    return res.status(201).json(new ApiResponse(201, learning, "Learning video created successfully"));
 });
 
 // get all learning
@@ -122,4 +126,4 @@ const deleteSign = asyncHandler(async (req, res) => {
 });
 
 
-export { createLearning, getLearningByCategory, updateSign, deleteSign, getSignByName }
+export { createLearningVideo, getLearningByCategory, updateSign, deleteSign, getSignByName }

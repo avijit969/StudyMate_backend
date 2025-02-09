@@ -1,6 +1,4 @@
 export const DBNAME = "StudyMate"
-export const questionTypes = ["Yes_no", "Write_sign", "Match_sign", "Sign_to_text", "Choose_correct_sign"]
-export const questionLevels = ["beginner", "intermediate", "advanced"]
 export const userChatEventsEnum = {
     'CONNECTED_EVENT': "connected",
     'DISCONNECTED_EVENT': "disconnected",
