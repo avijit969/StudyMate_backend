@@ -28,16 +28,9 @@ const createLearningVideo = asyncHandler(async (req, res) => {
 });
 
 // get all learning
-const getLearningByCategory = asyncHandler(async (req, res) => {
-    const { category } = req.params;
-    if (!category) {
-        throw new ApiError(400, "category is required")
-    }
-    const learning = await Learning.find({ category })
-    if (learning.length === 0) {
-        throw new ApiError(404, `learning not found for ${category} category`)
-    }
-    return res.status(200).json(new ApiResponse(200, learning, "learning fetched successfully"))
+const getAllLearningVideos = asyncHandler(async (req, res) => {
+    const learning = await Learning.find();
+    return res.json(new ApiResponse(200, learning, "Learning fetched successfully"));
 })
 
 // get bye sign_name
@@ -126,4 +119,4 @@ const deleteSign = asyncHandler(async (req, res) => {
 });
 
 
-export { createLearningVideo, getLearningByCategory, updateSign, deleteSign, getSignByName }
+export { createLearningVideo, updateSign, deleteSign, getSignByName }
