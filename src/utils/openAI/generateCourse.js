@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 const openai = new OpenAI({
-    apiKey: "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"
+    apiKey: process.env.OPENAI_API_KEY
 });
 const topicSchema = {
     type: "object",

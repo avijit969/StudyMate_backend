@@ -1,7 +1,7 @@
 import { createApi } from "unsplash-js"
 
 const unsplash = createApi({
-    accessKey: process.env.UNSPLASH_ACCESS_KEY || 'ZWqr5WWVZJi2xjG9zv9F3F_ccqZw8fGaEpioD0A2Vk4'
+    accessKey: process.env.UNSPLASH_ACCESS_KEY
 })
 const getImageFromUnsplash = async (image) => {
     const response = unsplash.search.getPhotos({

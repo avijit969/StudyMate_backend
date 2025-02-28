@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getYouTubeVideoByTopic = async (topicTitle) => {
-    const apiKey = "AIzaSyD6ZD6GG_DbEwmBXTDUdmalNoNJOIm_hXk";
+    const apiKey = process.env.YOUTUBE_API_KEY;
     const searchUrl = `https://www.googleapis.com/youtube/v3/search?q=${encodeURIComponent(topicTitle)}&part=snippet&type=video&key=${apiKey}`;
 
     try {
