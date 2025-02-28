@@ -139,14 +139,14 @@ const updateAvatar = asyncHandler(async (req, res) => {
   }
   const avatar = await uploadOnCloudinary(avatarLocalPath)
 
-  if (!avatar.url) {
+  if (!avatar) {
     throw new ApiError(400, "Error while uploading avatar")
   }
   const user = await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set: {
-        avatar: avatar.url,
+        avatar: avatar,
       },
     },
     { new: true }
@@ -197,7 +197,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
   let avatar;
   if (avatarLocalPath) {
     avatar = await uploadOnCloudinary(avatarLocalPath);
-    if (!avatar?.url) {
+    if (!avatar) {
       throw new ApiError(400, "Error while uploading avatar");
     }
   }
@@ -226,7 +226,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
         email: email || currentUser.email,
         fullName: fullName || currentUser.fullName,
         username: username || currentUser.username,
-        avatar: avatar?.url || currentUser.avatar,
+        avatar: avatar || currentUser.avatar,
       },
     },
     { new: true }

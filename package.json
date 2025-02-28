@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@auth/express": "^0.6.0",
+    "axios": "^1.8.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.1.0",
     "cookie-parser": "^1.4.6",
@@ -27,7 +28,9 @@
     "mongoose-aggregate-paginate-v2": "^1.1.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
+    "openai": "^4.85.4",
     "resend": "^4.0.0",
-    "socket.io": "^4.8.0"
+    "socket.io": "^4.8.0",
+    "unsplash-js": "^7.0.19"
   }
 }
