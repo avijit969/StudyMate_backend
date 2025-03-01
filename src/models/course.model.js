@@ -30,14 +30,6 @@ const courseSchema = new Schema({
         },
         explanation: {
             type: String
-        },
-        isCompleted: {
-            type: Boolean,
-            default: false
-        },
-        isEnabled: {
-            type: Boolean,
-            default: true
         }
     }],
     uploaded_by: {

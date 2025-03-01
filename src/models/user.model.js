@@ -48,7 +48,34 @@ const userSchema = new Schema(
     otp_expiry: {
       type: Number,
     },
-
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    enrolledCourses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    enrolledAssignments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Assignment",
+      },
+    ],
+    completedAssignments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Assignment",
+      },
+    ],
+    completedCourses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ]
   },
   {
     timestamps: true, // createdAt

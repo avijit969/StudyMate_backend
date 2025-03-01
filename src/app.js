@@ -23,11 +23,13 @@ app.use(cookieParser())
 import userRouter from './routers/user.routs.js'
 import learningRouter from './routers/learning.routes.js'
 import courseRouter from './routers/course.routes.js'
+import progressRouter from "./routers/progress.routes.js"
 import { errorHandler } from "./middlewares/error.middlewares.js"
 
 //routes declaration
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/learning", learningRouter)
 app.use("/api/v1/course", courseRouter)
+app.use("/api/v1/progress", progressRouter)
 app.use(errorHandler)
 export { app }
