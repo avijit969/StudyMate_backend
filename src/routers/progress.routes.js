@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { createProgress, getProgress, updateProgress } from "../controllers/progress.controller";
+
+const router = Router()
+router.route("/:course_id").post(verifyJWT, createProgress)
+router.route("/:course_id").get(verifyJWT, getProgress)
+router.route("/:course_id").patch(verifyJWT, updateProgress)
+
+export default router
