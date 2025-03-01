@@ -1,8 +1,8 @@
-import { Course } from "../models/course.model";
+import { Course } from "../models/course.model.js";
 import { Progress } from "../models/progress.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 const createProgress = asyncHandler(async (req, res) => {
     const { course_id } = req.params
     if (!course_id) {
