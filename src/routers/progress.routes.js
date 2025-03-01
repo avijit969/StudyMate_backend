@@ -5,6 +5,6 @@ import { createProgress, getProgress, updateProgress } from "../controllers/prog
 const router = Router()
 router.route("/:course_id").post(verifyJWT, createProgress)
 router.route("/:course_id").get(verifyJWT, getProgress)
-router.route("/:course_id").patch(verifyJWT, updateProgress)
+router.route("/:course_id/:topic_id").patch(verifyJWT, updateProgress)
 
 export default router
