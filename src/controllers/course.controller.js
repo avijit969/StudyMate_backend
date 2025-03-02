@@ -8,7 +8,7 @@ import { getYouTubeVideoByTopic } from "../utils/yt_video/getVideoFromYT.js";
 import { Learning } from "../models/learning.model.js";
 import { Assignment } from "../models/assignmates.model.js";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
-
+import { Progress } from "../models/progress.model.js"
 const generateCourseUsingAI = asyncHandler(async (req, res) => {
 
     const { course_name } = req.body;
@@ -63,7 +63,13 @@ const generateCourseUsingAI = asyncHandler(async (req, res) => {
 });
 
 const getCourses = asyncHandler(async (req, res) => {
+    const user = req.user._id;
     const courses = await Course.aggregate([
+        {
+            $match: {
+                uploaded_by: user
+            }
+        },
         {
             $lookup: {
                 from: "users",
@@ -82,6 +88,7 @@ const getCourses = asyncHandler(async (req, res) => {
                 thumbnail: 1,
                 likes: 1,
                 views: 1,
+                createdAt: 1,
                 uploadedBy: {
                     name: "$uploadedBy.fullName",
                     email: "$uploadedBy.email",
@@ -95,6 +102,17 @@ const getCourses = asyncHandler(async (req, res) => {
             }
         }
     ])
+    if (!courses) {
+        throw new ApiError(404, "Courses not found");
+    }
+    for (const course of courses) {
+        const progress = await Progress.findOne({ course_id: course._id, user_id: user });
+        if (progress) {
+            course.progress_percentage = progress.progress_percentage;
+        } else {
+            course.progress_percentage = 0;
+        }
+    }
 
     return res.json(new ApiResponse(200, courses));
 });

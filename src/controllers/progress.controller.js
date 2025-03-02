@@ -13,6 +13,11 @@ const createProgress = asyncHandler(async (req, res) => {
     if (!course) {
         throw new ApiError(404, "Course not found")
     }
+    // find progress by course_id and user_id
+    const isProgressAlreadyCreated = await Progress.findOne({ course_id: course_id, user_id: req.user._id })
+    if (isProgressAlreadyCreated) {
+        throw new ApiError(400, "Progress already created")
+    }
     const topics = course.topics
     const progress = await Progress.create({
         course_id: course_id,
