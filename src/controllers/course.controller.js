@@ -142,7 +142,7 @@ const updateCourse = asyncHandler(async (req, res) => {
     const thumbnailLocalPath = req.file?.path;
 
     // upload thumbnail to cloudinary
-    const thumbnailUrl = await uploadOnCloudinary(thumbnailLocalPath);
+    const { secure_url: thumbnailUrl } = await uploadOnCloudinary(thumbnailLocalPath);
     if (!thumbnailUrl) {
         throw new ApiError(500, "Error uploading thumbnail");
     }
@@ -166,6 +166,10 @@ const generateAssignment = asyncHandler(async (req, res) => {
     const course = await Course.findById(courseId);
     if (!course) {
         throw new ApiError(404, "Course not found");
+    }
+    // Check if assignment is already generated
+    if (course.assignment) {
+        throw new ApiError(400, "Assignment already generated");
     }
     // Generate assignment
     const assignment = await generateCourseAssessment(course.name);
