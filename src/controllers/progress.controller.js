@@ -85,7 +85,8 @@ const getUserProgress = asyncHandler(async (req, res) => {
             $project: {
                 _id: 1,
                 course_name: "$course.name",
-                progress_percentage: 1
+                progress_percentage: 1,
+                course_image: "$course.thumbnail"
             }
         }
     ]);
@@ -95,8 +96,6 @@ const getUserProgress = asyncHandler(async (req, res) => {
     if (!progressData) {
         throw new ApiError(404, "Progress not found");
     }
-    console.log(progressData)
-
     return res.json(new ApiResponse(200, { progressData, completedCoursesName, total_course }, "Progress fetched successfully"));
 });
 

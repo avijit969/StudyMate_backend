@@ -66,5 +66,25 @@ const getResult = asyncHandler(async (req, res) => {
     const result = score.result
     return res.json(new ApiResponse(200, result, "Score fetched successfully"))
 })
+const getAllScores = asyncHandler(async (req, res) => {
+    const scores = await Score.aggregate([
+        {
+            $match: {
+                user_id: req.user._id
+            },
+        },
+        {
+            $project: {
+                score: 1,
+                total_questions: 1,
+                correct_answers: 1,
+                wrong_answers: 1,
+                time_taken: 1,
+                assessment_id: 1
+            }
+        }
+    ])
+    return res.json(new ApiResponse(200, scores, "Scores fetched successfully"))
+})
 
-export { createScore, getScore, getResult }
+export { createScore, getScore, getResult, getAllScores }
