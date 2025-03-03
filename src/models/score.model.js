@@ -1,33 +1,29 @@
 import mongoose, { Schema } from "mongoose";
-
-const assessmentSchema = new Schema({
-    questions: [
-        {
-            question: {
-                type: String,
-                required: true
-            },
-            answerIndex: {
-                type: Number,
-                required: true
-            },
-            options: {
-                type: [String],
-                required: true
-            }
-        }
-    ]
-}, { timestamps: true });
-
-const assignmentTrackSchema = new Schema({
+const resultSchema = Schema({
+    question_id: {
+        type: Schema.Types.ObjectId,
+        ref: "Question",
+        required: true
+    },
+    user_answer_index: {
+        type: Number,
+        required: true
+    },
+    correct_answer_index: {
+        type: Number,
+        required: true
+    }
+})
+export const Result = mongoose.model("Result", resultSchema);
+const scoreSchema = Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
-    assignment_id: {
+    assessment_id: {
         type: Schema.Types.ObjectId,
-        ref: "Assignment",
+        ref: "Assessment",
         required: true
     },
     score: {
@@ -49,7 +45,11 @@ const assignmentTrackSchema = new Schema({
     time_taken: {
         type: Number,
         required: true
+    },
+    result: {
+        type: [resultSchema],
+        required: true
     }
 })
 
-export const Assignment = mongoose.model("Assignment", assessmentSchema);
+export const Score = mongoose.model("Score", scoreSchema);

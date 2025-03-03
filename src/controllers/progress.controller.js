@@ -62,5 +62,43 @@ const getProgress = asyncHandler(async (req, res) => {
     }
     return res.json(new ApiResponse(200, progress, "Progress fetched successfully"))
 })
+const getUserProgress = asyncHandler(async (req, res) => {
+    console.log(req.user._id)
+    const progressData = await Progress.aggregate([
+        {
+            $match: {
+                user_id: req.user._id
+            }
+        },
+        {
+            $lookup: {
+                from: "Course",
+                localField: "course_id",
+                foreignField: "_id",
+                as: "course"
+            }
+        },
+        {
+            $unwind: "$course"
+        },
+        {
+            $project: {
+                _id: 1,
+                course_name: "$course.name",
+                progress_percentage: 1
+            }
+        }
+    ]);
+    const completedCoursesName = progressData.filter(progress => progress.progress_percentage === 100).map(progress => progress.course_name)
+    const total_course = progressData.length
 
-export { createProgress, updateProgress, getProgress }
+    if (!progressData) {
+        throw new ApiError(404, "Progress not found");
+    }
+    console.log(progressData)
+
+    return res.json(new ApiResponse(200, { progressData, completedCoursesName, total_course }, "Progress fetched successfully"));
+});
+
+
+export { createProgress, updateProgress, getProgress, getUserProgress }

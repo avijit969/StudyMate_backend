@@ -51,17 +51,17 @@ const questionSchema = {
                         type: "string",
                         description: "Question related to the topic"
                     },
-                    answerIndex: {
-                        type: "integer",
-                        description: "Index of the correct answer in the options array"
-                    },
                     options: {
                         type: "array",
                         description: "Multiple choice options for the question",
                         items: {
                             type: "string"
                         }
-                    }
+                    },
+                    answerIndex: {
+                        type: "integer",
+                        description: "Index of the correct answer in the options array and make sure that is correct answer index from options array"
+                    },
                 },
                 required: ["question", "answerIndex", "options"]
             }
