@@ -93,7 +93,8 @@ const getCourses = asyncHandler(async (req, res) => {
                     name: "$uploadedBy.fullName",
                     email: "$uploadedBy.email",
                     profileImage: "$uploadedBy.avatar"
-                }
+                },
+                assignment: 1
             }
         },
         {
