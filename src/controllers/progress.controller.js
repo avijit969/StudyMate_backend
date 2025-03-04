@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Course } from "../models/course.model.js";
 import { Progress } from "../models/progress.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -67,7 +68,7 @@ const getUserProgress = asyncHandler(async (req, res) => {
     const progressData = await Progress.aggregate([
         {
             $match: {
-                user_id: req.user._id
+                user_id: new mongoose.Types.ObjectId(req.user._id)  // Ensure ObjectId type
             }
         },
         {

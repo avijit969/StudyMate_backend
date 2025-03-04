@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 const learningSchema = new Schema({
     video_url: {
         type: String,
@@ -44,5 +44,5 @@ const learningSchema = new Schema({
         required: true,
     },
 }, { timestamps: true });
-
+learningSchema.plugin(mongooseAggregatePaginate)
 export const Learning = mongoose.model("Learning", learningSchema)

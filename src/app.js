@@ -26,6 +26,9 @@ import courseRouter from './routers/course.routes.js'
 import progressRouter from "./routers/progress.routes.js"
 import chatRouter from "./routers/chat.routes.js"
 import scoreRouter from "./routers/score.routes.js"
+import commentRouter from "./routers/comment.routes.js"
+import historyRouter from "./routers/history.routes.js"
+import likeRouter from "./routers/like.routes.js"
 import { errorHandler } from "./middlewares/error.middlewares.js"
 
 //routes declaration
@@ -35,5 +38,8 @@ app.use("/api/v1/course", courseRouter)
 app.use("/api/v1/progress", progressRouter)
 app.use("/api/v1/chat", chatRouter)
 app.use("/api/v1/score", scoreRouter)
+app.use("/api/v1/comment", commentRouter)
+app.use("/api/v1/history", historyRouter)
+app.use("/api/v1/like", likeRouter)
 app.use(errorHandler)
 export { app }
