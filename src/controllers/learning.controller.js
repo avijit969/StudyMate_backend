@@ -48,6 +48,33 @@ const getAllLearningVideo = asyncHandler(async (req, res) => {
     }
 });
 
+const getLearningVideoById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const learning = await Learning.findById({ _id: id });
+    if (!learning) {
+        throw new ApiError(404, "Learning video not found");
+    }
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video fetched successfully"));
+});
 
+const getLearningVideoByCategory = asyncHandler(async (req, res) => {
+    const { category } = req.params;
+    const learning = await Learning.find({ category });
+    if (!learning) {
+        throw new ApiError(404, "Learning video not found");
+    }
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video fetched successfully"));
+});
 
-export { createLearningVideo, getAllLearningVideo }
+const getLearningVideoByName = asyncHandler(async (req, res) => {
+    const { title } = req.params;
+    console.log(title)
+    // find the learning video by not case sensitive and exact match find similarity
+    const learning = await Learning.find({ title: { $regex: title, $options: "i" } });
+    if (!learning) {
+        throw new ApiError(404, "Learning video not found");
+    }
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video fetched successfully"));
+});
+
+export { createLearningVideo, getAllLearningVideo, getLearningVideoById, getLearningVideoByCategory, getLearningVideoByName }
