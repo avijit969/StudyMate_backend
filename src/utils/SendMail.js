@@ -3,7 +3,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const sendMail = async (to, subject, html) => {
     try {
         const { data, error } = await resend.emails.send({
-            from: "SnapStore 📸 <snaptore@aviscodeverse.tech>",
+            from: "StudyMate 📖 <studymate@support.signmate.site>",
             to,
             subject,
             html

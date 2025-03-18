@@ -34,7 +34,6 @@ const addVideoToHistory = asyncHandler(async (req, res) => {
 
 const getHistory = asyncHandler(async (req, res) => {
     const user = req.user._id;
-    console.log(user);
     const history = await History.aggregate([
         {
             $match: {
@@ -68,7 +67,6 @@ const getHistory = asyncHandler(async (req, res) => {
         }
     ]);
 
-    console.log(history);
     return res.json(new ApiResponse(200, history, "History fetched successfully"));
 });
 

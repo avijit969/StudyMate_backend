@@ -26,7 +26,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
 // user registration ✅
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body
-  console.log(fullName, email, username, password)
   if (
     [fullName, email, username, password].some((field) => field?.trim() === "")
   ) {
@@ -51,6 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(200, createdUser, "User registered Successfully"))
 })
+
 
 // user login  ✅
 const loginUser = asyncHandler(async (req, res) => {
@@ -96,7 +96,6 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 // is logged in
 const isLoggedIn = asyncHandler(async (req, res) => {
-  console.log("this")
   const user = await User.findById(req.user?._id)
   if (user) {
     res.json(user)
@@ -239,9 +238,7 @@ const updateUserInfo = asyncHandler(async (req, res) => {
 // forgot password with email OTP
 const sendOtpForForgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body
-  console.log(email)
   const user = await User.findOne({ email })
-  console.log(user)
   if (!user) {
     throw new ApiError(400, "User with this email does not exist")
   }
@@ -258,8 +255,8 @@ const sendOtpForForgotPassword = asyncHandler(async (req, res) => {
 
 // verify otp
 const verifyOtpForForgotPassword = asyncHandler(async (req, res) => {
-  const { otp } = req.body
-  const user = await User.findById(req.user._id)
+  const { otp, email } = req.body
+  const user = await User.findOne({ email })
   if (!user) {
     throw new ApiError(400, "User with this email does not exist")
   }
@@ -278,7 +275,16 @@ const verifyOtpForForgotPassword = asyncHandler(async (req, res) => {
 
 // resend otp 
 const resendOtpForForgotPassword = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id)
+  const { email } = req.body
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw new ApiError(400, "User with this email does not exist")
+  }
+  if (user.otp_expiry > Date.now()) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, {}, "OTP has been already sent check your email"))
+  }
   const otp = generateOTP()
   const hashedOtp = hashOtp(otp.toString())
   user.otp = hashedOtp
@@ -291,8 +297,8 @@ const resendOtpForForgotPassword = asyncHandler(async (req, res) => {
 })
 // forgot password
 const forgotPassword = asyncHandler(async (req, res) => {
-  const { password } = req.body
-  const user = await User.findById(req.user._id)
+  const { password, email } = req.body
+  const user = await User.findOne({ email })
   if (!user) {
     throw new ApiError(400, "User with this email does not exist")
   }

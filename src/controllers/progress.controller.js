@@ -64,7 +64,6 @@ const getProgress = asyncHandler(async (req, res) => {
     return res.json(new ApiResponse(200, progress, "Progress fetched successfully"))
 })
 const getUserProgress = asyncHandler(async (req, res) => {
-    console.log(req.user._id)
     const progressData = await Progress.aggregate([
         {
             $match: {

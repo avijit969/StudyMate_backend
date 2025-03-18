@@ -21,9 +21,6 @@ const generateCourseUsingAI = asyncHandler(async (req, res) => {
     if (!course) {
         throw new ApiError(500, "Error generating course");
     }
-
-    console.log("Generated course:", course);
-
     // Process topics: Check video availability or fetch from YouTube
     const topics = await Promise.all(
         course.topics.map(async (topic) => {
@@ -39,13 +36,11 @@ const generateCourseUsingAI = asyncHandler(async (req, res) => {
             };
         })
     );
-
     // Generate course thumbnail
     const thumbnail = await getImageFromUnsplash(course_name);
     if (!thumbnail) {
         throw new ApiError(500, "Error generating thumbnail");
     }
-
     // Create and save the course in the database
     const createdCourse = await Course.create({
         name: course_name,
@@ -54,11 +49,9 @@ const generateCourseUsingAI = asyncHandler(async (req, res) => {
         uploaded_by: req.user._id,
         thumbnail
     });
-
     if (!createdCourse) {
         throw new ApiError(500, "Error saving course");
     }
-
     return res.json(new ApiResponse(200, createdCourse, "Course generated successfully"));
 });
 
@@ -163,7 +156,6 @@ const updateCourse = asyncHandler(async (req, res) => {
 })
 const generateAssignment = asyncHandler(async (req, res) => {
     const { id: courseId } = req.params;
-    console.log("courseId", courseId);
     const course = await Course.findById(courseId);
     if (!course) {
         throw new ApiError(404, "Course not found");
@@ -204,7 +196,6 @@ const getAssignmentsById = asyncHandler(async (req, res) => {
 // get topic by topic id and course id
 const getTopicByCourseAndTopicId = asyncHandler(async (req, res) => {
     const { id, course_id } = req.params;
-    console.log("id", id, "course_id", course_id);
     const course = await Course.findById(course_id);
     if (!course) {
         throw new ApiError(404, "Course not found");

@@ -29,7 +29,6 @@ const createLearningVideo = asyncHandler(async (req, res) => {
 
 const getAllLearningVideo = asyncHandler(async (req, res) => {
     const { page, limit } = req.params;
-    console.log(page, limit)
     const options = {
         page: parseInt(page, 10),
         limit: parseInt(limit, 10),
@@ -68,7 +67,6 @@ const getLearningVideoByCategory = asyncHandler(async (req, res) => {
 
 const getLearningVideoByName = asyncHandler(async (req, res) => {
     const { title } = req.params;
-    console.log(title)
     // find the learning video by not case sensitive and exact match find similarity
     const learning = await Learning.find({ title: { $regex: title, $options: "i" } });
     if (!learning) {

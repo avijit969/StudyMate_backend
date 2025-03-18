@@ -25,9 +25,9 @@ router.route("/profile").get(verifyJWT, getProfile)
 router.route("/changePassword").patch(verifyJWT, changePassword)
 router.route("/update-profile").patch(verifyJWT, upload.single("avatar"), updateUserInfo)
 
-router.route("/send-otp-for-forgotPassword").post(verifyJWT, sendOtpForForgotPassword)
-router.route("/verify-otp-for-forgotPassword").post(verifyJWT, verifyOtpForForgotPassword)
-router.route("/resend-otp-for-forgotPassword").post(verifyJWT, resendOtpForForgotPassword)
-router.route("/forgot-password").post(verifyJWT, forgotPassword)
+router.route("/send-otp-for-forgotPassword").post(sendOtpForForgotPassword)
+router.route("/verify-otp-for-forgotPassword").post(verifyOtpForForgotPassword)
+router.route("/resend-otp-for-forgotPassword").post(resendOtpForForgotPassword)
+router.route("/forgot-password").post(forgotPassword)
 
 export default router

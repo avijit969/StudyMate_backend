@@ -6,7 +6,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const addComment = asyncHandler(async (req, res) => {
     const { post_id } = req.params;
     const { comment } = req.body;
-    console.log(post_id, comment)
     const user = req.user._id;
     if (!comment) {
         throw new ApiError(400, "comment is required")
