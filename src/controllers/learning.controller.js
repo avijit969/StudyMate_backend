@@ -37,7 +37,37 @@ const getAllLearningVideo = asyncHandler(async (req, res) => {
 
     try {
         const result = await Learning.aggregatePaginate(
-            Learning.aggregate([{ $match: {} }]), // Pass pipeline directly
+            Learning.aggregate([
+                { $match: {} },
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "uploaded_by",
+                        foreignField: "_id",
+                        as: "uploader"
+                    }
+                }, {
+                    $unwind: "$uploader"
+                },
+                {
+                    $project: {
+                        "uploader._id": 1,
+                        "uploader.username": 1,
+                        "uploader.fullName": 1,
+                        "uploader.avatar": 1,
+                        title: 1,
+                        category: 1,
+                        description: 1,
+                        video_url: 1,
+                        video_type: 1,
+                        thumbnail: 1,
+                        likes: 1,
+                        length: 1,
+                        dislikes: 1
+                    }
+                }
+
+            ]), // Pass pipeline directly
             options
         );
 
@@ -122,7 +152,32 @@ const getLearningVideoByCategory = asyncHandler(async (req, res) => {
 const getLearningVideoByName = asyncHandler(async (req, res) => {
     const { title } = req.params;
     // find the learning video by not case sensitive and exact match find similarity
-    const learning = await Learning.find({ title: { $regex: title, $options: "i" } });
+    const learning = await Learning.aggregate([
+        { $match: { title: { $regex: title, $options: "i" } } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "uploaded_by",
+                foreignField: "_id",
+                as: "uploader"
+            }
+        },
+        {
+            $project: {
+                "uploader._id": 1,
+                "uploader.username": 1,
+                "uploader.fullName": 1,
+                "uploader.avatar": 1,
+                title: 1,
+                category: 1,
+                description: 1,
+                video_url: 1,
+                video_type: 1,
+                thumbnail: 1,
+            }
+        }
+    ])
+    // const learning = await Learning.find({ title: { $regex: title, $options: "i" } });
     if (!learning) {
         throw new ApiError(404, "Learning video not found");
     }
@@ -137,6 +192,9 @@ const deleteVideoById = asyncHandler(async (req, res) => {
     const learning = await Learning.findById(id);
     if (!learning) {
         throw new ApiError(404, "Learning video not found");
+    }
+    if (learning.uploaded_by.toString() !== req.user._id.toString()) {
+        throw new ApiError(403, "You are not authorized to delete this learning video");
     }
     await deleteImageByPublicId(learning.video_url);
     await deleteImageByPublicId(learning.thumbnail);
@@ -158,6 +216,11 @@ const editVideoById = asyncHandler(async (req, res) => {
     if (!learning) {
         throw new ApiError(404, "Learning video not found");
     }
+    console.log(learning.uploaded_by, req.user._id);
+    if (learning.uploaded_by.toString() !== req.user._id.toString()) {
+        console.log(learning.uploaded_by, req.user._id);
+        throw new ApiError(403, "You are not authorized to update this learning video");
+    }
     if (title) learning.title = title;
     if (category) learning.category = category;
     if (description) learning.description = description;
@@ -176,7 +239,7 @@ const editVideoById = asyncHandler(async (req, res) => {
     await learning.save();
 
 
-    return res.status(200).json(new ApiResponse(200, learning, "Learning video deleted successfully"));
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video edited successfully"));
 })
 
 export { createLearningVideo, getAllLearningVideo, getLearningVideoById, getLearningVideoByCategory, getLearningVideoByName, getAllVideosByUser, deleteVideoById, editVideoById };
