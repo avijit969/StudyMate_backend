@@ -48,6 +48,23 @@ const getAllLearningVideo = asyncHandler(async (req, res) => {
     }
 });
 
+const getAllVideosByUser = asyncHandler(async (req, res) => {
+    const { page, limit } = req.params;
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+    };
+    const videos = await Learning.aggregatePaginate(
+        Learning.aggregate([{ $match: { uploaded_by: new Types.ObjectId(req.user._id) } }]),
+        options
+    );
+    if (videos.docs.length === 0) {
+        throw new ApiError(404, "No learning videos found for this user");
+    }
+
+    return res.status(200).json(new ApiResponse(200, videos, "Learning videos fetched successfully"));
+});
+
 const getLearningVideoById = asyncHandler(async (req, res) => {
     console.log("Fetching learning video by ID");
     const { id } = req.params;
@@ -112,4 +129,54 @@ const getLearningVideoByName = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, learning, "Learning video fetched successfully"));
 });
 
-export { createLearningVideo, getAllLearningVideo, getLearningVideoById, getLearningVideoByCategory, getLearningVideoByName }
+const deleteVideoById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid ID format");
+    }
+    const learning = await Learning.findById(id);
+    if (!learning) {
+        throw new ApiError(404, "Learning video not found");
+    }
+    await deleteImageByPublicId(learning.video_url);
+    await deleteImageByPublicId(learning.thumbnail);
+    await Learning.findByIdAndDelete(id);
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video deleted successfully"));
+})
+
+const editVideoById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { title, category, description, video_type } = req.body;
+    const { learning_video, thumbnail } = req.files;
+    if (!title && !category && !description && !video_type && !learning_video && !thumbnail) {
+        throw new ApiError(400, "There is no fileds to update");
+    }
+    if (!Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid ID format");
+    }
+    const learning = await Learning.findById(id);
+    if (!learning) {
+        throw new ApiError(404, "Learning video not found");
+    }
+    if (title) learning.title = title;
+    if (category) learning.category = category;
+    if (description) learning.description = description;
+    if (video_type) learning.video_type = video_type;
+    if (learning_video) {
+        await deleteImageByPublicId(learning.video_url);
+        const { secure_url: learning_video_url, duration } = await uploadOnCloudinary(learning_video[0].path);
+        learning.video_url = learning_video_url;
+        learning.length = duration;
+    }
+    if (thumbnail) {
+        await deleteImageByPublicId(learning.thumbnail);
+        const { secure_url: thumbnail_url } = await uploadOnCloudinary(thumbnail[0].path);
+        learning.thumbnail = thumbnail_url;
+    }
+    await learning.save();
+
+
+    return res.status(200).json(new ApiResponse(200, learning, "Learning video deleted successfully"));
+})
+
+export { createLearningVideo, getAllLearningVideo, getLearningVideoById, getLearningVideoByCategory, getLearningVideoByName, getAllVideosByUser, deleteVideoById, editVideoById };
