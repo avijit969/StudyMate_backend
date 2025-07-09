@@ -31,14 +31,6 @@ const learningSchema = new Schema({
         ref: "User",
         required: true,
     },
-    likes: {
-        type: Number,
-        default: 0,
-    },
-    dislikes: {
-        type: Number,
-        default: 0,
-    },
     length: {
         type: String,
         required: true,

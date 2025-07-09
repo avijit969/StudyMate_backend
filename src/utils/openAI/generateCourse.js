@@ -93,7 +93,6 @@ const generateCourse = async (courseName) => {
     const result = completion?.choices[0]?.message?.function_call?.arguments;
     return JSON.parse(result);
 };
-// generateCourse("12th grade physics").then(console.log);
 
 const generateCourseAssessment = async (courseName) => {
     const completion = await openai.chat.completions.create({
@@ -119,5 +118,4 @@ const generateCourseAssessment = async (courseName) => {
     return JSON.parse(result);
 };
 
-// generateCourseAssessment("java for beginners").then((data) => console.log(JSON.stringify(data, null, 4)));
 export { generateCourse, generateCourseAssessment };

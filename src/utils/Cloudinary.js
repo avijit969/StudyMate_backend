@@ -13,7 +13,6 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
     // file has been uploaded succesfully
-    console.log("flie is uploaded on cloudinary", response);
     fs.unlinkSync(localFilePath); // remove the locally temporarily saved file
     return response;
   } catch (error) {
@@ -29,10 +28,10 @@ function extractPublicId(cloudinaryUrl) {
 const deleteImageByPublicId = (url, type) => {
   v2.api.delete_resources(extractPublicId(url), { type: "upload", resource_type: type }, (err, result) => {
     if (err) {
-      console.log(err);
+
     }
     if (result) {
-      console.log(result);
+
     }
   });
 }

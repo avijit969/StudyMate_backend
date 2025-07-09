@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { deleteImageByPublicId, uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Types } from "mongoose";
 const createLearningVideo = asyncHandler(async (req, res) => {
     const { title, category, description, video_type } = req.body;
     const { learning_video, thumbnail } = req.files;
@@ -48,13 +49,49 @@ const getAllLearningVideo = asyncHandler(async (req, res) => {
 });
 
 const getLearningVideoById = asyncHandler(async (req, res) => {
+    console.log("Fetching learning video by ID");
     const { id } = req.params;
-    const learning = await Learning.findById({ _id: id });
-    if (!learning) {
+
+    if (!Types.ObjectId.isValid(id)) {
+        throw new ApiError(400, "Invalid ID format");
+    }
+
+    const learning = await Learning.aggregate([
+        { $match: { _id: new Types.ObjectId(id) } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "uploaded_by",
+                foreignField: "_id",
+                as: "uploader"
+            }
+        },
+        { $unwind: "$uploader" },
+        {
+            $project: {
+                "uploader._id": 1,
+                "uploader.username": 1,
+                "uploader.fullName": 1,
+                "uploader.avatar": 1,
+                title: 1,
+                category: 1,
+                description: 1,
+                video_url: 1,
+                video_type: 1,
+                thumbnail: 1,
+            }
+        }
+    ]);
+
+    if (learning.length === 0) {
         throw new ApiError(404, "Learning video not found");
     }
-    return res.status(200).json(new ApiResponse(200, learning, "Learning video fetched successfully"));
+
+    return res.status(200).json(
+        new ApiResponse(200, learning[0], "Learning video fetched successfully")
+    );
 });
+
 
 const getLearningVideoByCategory = asyncHandler(async (req, res) => {
     const { category } = req.params;

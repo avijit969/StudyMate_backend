@@ -106,7 +106,7 @@ const sendOtpByMail = async (otp, email) => {
         <!-- Footer -->
         <div class="footer">
             <p>Need help? <a href="mailto:studymate@support.signmate.site">Contact us</a></p>
-            <p>© 2024 StudyMate, All Rights Reserved.</p>
+            <p>© 2025 StudyMate, All Rights Reserved.</p>
         </div>
     </div>
 
