@@ -79,6 +79,7 @@ const loginUser = asyncHandler(async (req, res) => {
     maxAge: 60 * 60 * 1000,
     sameSite: "none",
     path: "/",
+    domain: ".avijit.site"
   }
   return res
     .status(200)
@@ -125,6 +126,7 @@ const logOut = asyncHandler(async (req, res) => {
     maxAge: 60 * 60 * 1000,
     sameSite: "none",
     path: "/",
+    domain: ".avijit.site"
   }
   return res
     .status(200)
