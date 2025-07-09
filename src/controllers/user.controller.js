@@ -73,11 +73,13 @@ const loginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   )
-  const options = {
+  options = {
     httpOnly: true,
     secure: true,
     maxAge: 60 * 60 * 1000,
     sameSite: "none",
+    path: "/",
+    domain: "studymate-instructor.vercel.app"
   }
   return res
     .status(200)
@@ -123,6 +125,8 @@ const logOut = asyncHandler(async (req, res) => {
     secure: true,
     maxAge: 60 * 60 * 1000,
     sameSite: "none",
+    path: "/",
+    domain: "studymate-instructor.vercel.app"
   }
   return res
     .status(200)
