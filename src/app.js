@@ -41,5 +41,8 @@ app.use("/api/v1/score", scoreRouter)
 app.use("/api/v1/comment", commentRouter)
 app.use("/api/v1/history", historyRouter)
 app.use("/api/v1/like", likeRouter)
+app.use("/api/v1/health", (req, res, next) => {
+  res.status(200).json({ message: "OK" });
+});
 app.use(errorHandler)
 export { app }
